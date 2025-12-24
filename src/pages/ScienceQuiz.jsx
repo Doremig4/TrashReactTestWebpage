@@ -57,8 +57,8 @@ export function ScienceQuiz({ onNavigate }) {
             <span className="score-total">/ {scienceQuestions.length}</span>
           </div>
           <p>
-            {score === scienceQuestions.length ? "아인슈타인 레벨! 🧠" :
-              score > scienceQuestions.length / 2 ? "탄탄한 과학 상식! 🧪" : "연구가 더 필요해요! 🥼"}
+            {score === scienceQuestions.length ? "똒똒이 레벨! 🧠" :
+              score > scienceQuestions.length / 2 ? "좀 치시네요! 🧪" : "지능이 딸리시군요! 🥼"}
           </p>
           <div className="actions">
             <button className="btn btn-primary" onClick={restartGame}>

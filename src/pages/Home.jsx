@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gamepad2, FlaskConical, ArrowRight } from 'lucide-react';
+import { Gamepad2, FlaskConical, ArrowRight, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export function Home({ onNavigate }) {
@@ -21,7 +21,7 @@ export function Home({ onNavigate }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          사실 React실력을 뽑내고싶었습니다 팀원들이 모두 정상이 아니에요 
+          팀원들이 모두 정상이 아니에요
         </motion.p>
       </div>
 
@@ -61,6 +61,26 @@ export function Home({ onNavigate }) {
           <p>사람이라면 맞을수밖에 없는 과학 상식 퀴즈를 풀어보세요.</p>
           <div className="card-link">
             퀴즈 시작 <ArrowRight size={16} />
+          </div>
+        </motion.div>
+
+
+        <motion.div
+          className="card game-card"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => onNavigate('advice')}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <div className="card-icon icon-advice">
+            <Sparkles size={32} />
+          </div>
+          <h3>책님 알려주세요</h3>
+          <p>책님에게 당신의 고민을 털어놓고 해답을 구해보세요.</p>
+          <div className="card-link">
+            상담받기 <ArrowRight size={16} />
           </div>
         </motion.div>
       </div>
@@ -140,6 +160,11 @@ export function Home({ onNavigate }) {
           color: var(--color-secondary);
         }
 
+        .icon-advice {
+          background-color: rgba(236, 72, 153, 0.1);
+          color: #ec4899;
+        }
+
         .card-link {
           display: flex;
           align-items: center;
@@ -154,6 +179,6 @@ export function Home({ onNavigate }) {
           }
         }
       `}</style>
-    </div>
+    </div >
   );
 }

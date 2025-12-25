@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gamepad2, FlaskConical, Home } from 'lucide-react';
+import { Gamepad2, FlaskConical, Home, Sparkles } from 'lucide-react';
 
 export function Layout({ children, onNavigate, currentPage }) {
   return (
@@ -31,6 +31,13 @@ export function Layout({ children, onNavigate, currentPage }) {
             >
               <FlaskConical size={20} />
               <span className="nav-label">과학상식</span>
+            </button>
+            <button
+              className={`nav-item ${currentPage === 'advice' ? 'active' : ''}`}
+              onClick={() => onNavigate('advice')}
+            >
+              <Sparkles size={20} />
+              <span className="nav-label">책님 알려주세요</span>
             </button>
           </nav>
         </div>

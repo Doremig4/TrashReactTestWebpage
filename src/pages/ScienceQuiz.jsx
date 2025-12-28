@@ -1,20 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { scienceQuestions } from '../data/questions';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, XCircle, RefreshCw, ArrowLeft, ThumbsUp, ThumbsDown } from 'lucide-react';
 
 export function ScienceQuiz({ onNavigate }) {
+  const [gameQuestions, setGameQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [lastAnswerCorrect, setLastAnswerCorrect] = useState(false);
 
-  const currentQuestion = scienceQuestions[currentIndex];
+  // Initialize game on mount
+  useEffect(() => {
+    startNewGame();
+  }, []);
+
+  const startNewGame = () => {
+    // 1. Shuffle all questions safely
+    const shuffledAll = [...scienceQuestions].sort(() => Math.random() - 0.5);
+    // 2. Select first 5 for the game
+    const count = Math.min(5, shuffledAll.length);
+    const selected = shuffledAll.slice(0, count);
+
+    setGameQuestions(selected);
+    setCurrentIndex(0);
+    setScore(0);
+    setIsFinished(false);
+    setShowResult(false);
+    setLastAnswerCorrect(false);
+  };
 
   const handleAnswer = (userAnswer) => {
     if (showResult) return;
 
+    const currentQuestion = gameQuestions[currentIndex];
     // userAnswer is boolean (true/false)
     const isCorrect = userAnswer === currentQuestion.isTrue;
     setLastAnswerCorrect(isCorrect);
@@ -27,7 +47,7 @@ export function ScienceQuiz({ onNavigate }) {
 
     // Wait slightly longer for reading explanation
     setTimeout(() => {
-      if (currentIndex < scienceQuestions.length - 1) {
+      if (currentIndex < gameQuestions.length - 1) {
         setCurrentIndex(i => i + 1);
         setShowResult(false);
       } else {
@@ -36,12 +56,7 @@ export function ScienceQuiz({ onNavigate }) {
     }, 2500);
   };
 
-  const restartGame = () => {
-    setCurrentIndex(0);
-    setScore(0);
-    setIsFinished(false);
-    setShowResult(false);
-  };
+  if (gameQuestions.length === 0) return null;
 
   if (isFinished) {
     return (
@@ -54,14 +69,14 @@ export function ScienceQuiz({ onNavigate }) {
           <h2>퀴즈 종료!</h2>
           <div className="score-display">
             <span className="score-number">{score}</span>
-            <span className="score-total">/ {scienceQuestions.length}</span>
+            <span className="score-total">/ {gameQuestions.length}</span>
           </div>
           <p>
-            {score === scienceQuestions.length ? "똒똒이 레벨! 🧠" :
-              score > scienceQuestions.length / 2 ? "좀 치시네요! 🧪" : "지능이 딸리시군요! 🥼"}
+            {score === gameQuestions.length ? "똒똒이 레벨! 🧠" :
+              score > gameQuestions.length / 2 ? "좀 치시네요! 🧪" : "지능이 딸리시군요! 🥼"}
           </p>
           <div className="actions">
-            <button className="btn btn-primary" onClick={restartGame}>
+            <button className="btn btn-primary" onClick={startNewGame}>
               <RefreshCw size={20} /> 다시 하기
             </button>
             <button className="btn btn-secondary" onClick={() => onNavigate('home')}>
@@ -69,9 +84,14 @@ export function ScienceQuiz({ onNavigate }) {
             </button>
           </div>
         </motion.div>
+
+        {/* Helper function or component for styles would be cleaner, but keeping inline for consistency */}
+        <GameStyles />
       </div>
     );
   }
+
+  const currentQuestion = gameQuestions[currentIndex];
 
   return (
     <div className="quiz-container">
@@ -80,7 +100,7 @@ export function ScienceQuiz({ onNavigate }) {
           <ArrowLeft size={20} />
         </button>
         <div className="progress">
-          문제 {currentIndex + 1} / {scienceQuestions.length}
+          문제 {currentIndex + 1} / {gameQuestions.length}
         </div>
         <div className="score-badge">점수: {score}</div>
       </div>
@@ -135,7 +155,14 @@ export function ScienceQuiz({ onNavigate }) {
         </motion.div>
       </AnimatePresence>
 
-      <style>{`
+      <GameStyles />
+    </div>
+  );
+}
+
+function GameStyles() {
+  return (
+    <style>{`
         .quiz-container {
           max-width: 600px;
           margin: 0 auto;
@@ -154,6 +181,15 @@ export function ScienceQuiz({ onNavigate }) {
           color: white;
           padding: 0.5rem;
           border-radius: 50%;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .question-card, .result-card {
@@ -203,6 +239,8 @@ export function ScienceQuiz({ onNavigate }) {
           font-size: 1.2rem;
           transition: transform 0.2s;
           color: white;
+          border: none;
+          cursor: pointer;
         }
 
         .ox-btn:hover {
@@ -270,6 +308,5 @@ export function ScienceQuiz({ onNavigate }) {
           justify-content: center;
         }
       `}</style>
-    </div>
   );
 }
